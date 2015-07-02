@@ -11,6 +11,7 @@ then
   used=`grep --only-matching --perl-regex "(?<=used\=).*" used`
   username=`grep --only-matching --perl-regex "(?<=username\=).*" used`
   masterip=`grep --only-matching --perl-regex "(?<=masterip\=).*" used`
+  filelist=`grep --only-matching --perl-regex "(?<=exclude\=).*" used`
 else
  echo "privertkey not found .key will genarate in next steps"
 fi
@@ -34,10 +35,13 @@ else
  read username
  echo "masterip :"
  read masterip
+ echo "what are the files you want to exclude"
+ echo "ex: file1,file2,file3"
+ read filelist
  echo "press enter without giving any inputs to next 3 steps"
  sudo ssh-keygen -t rsa -b 2048
  sudo ssh-copy-id -i /root/.ssh/id_rsa.pub $username@$masterip
- echo -e "used=1\nusername=$username\nmasterip=$masterip">>$file
+ echo -e "used=1\nusername=$username\nmasterip=$masterip\nexclude=$filelist">>$file
  sudo chmod 777  used serverrysinc.sh
  ./serverrysinc.sh
 fi
