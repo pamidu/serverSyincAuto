@@ -21,13 +21,11 @@ echo "$used"
 #will automaticly sync
 if [[ $used == "1" ]]
 then
- echo "what are the files you want to exclude"
- echo "ex: file1,file2,file3"
- read filelist
-echo "$username"
-echo "$masterip"
-command=" sudo rsync -avzhe ssh --exclude={$filelist} $username@$masterip:/var/www/html/ /var/www/html/"
-eval $command
+ echo "$filelist"
+ echo "$username"
+ echo "$masterip"
+ command=" sudo rsync -avzhe ssh --exclude={$filelist} $username@$masterip:/var/www/html/ /var/www/html/"
+ eval $command
 #using as first time so privert key will create for passwordless loging and syicing process will start
 else
  echo "creating privertkey for passwordless logging"
