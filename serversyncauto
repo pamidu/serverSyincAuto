@@ -1,0 +1,43 @@
+#!/bin/bash
+
+file="used"
+used="0"
+#find saved detail file
+#previously used or not
+#username
+#host
+if [ -f "$file" ]
+then
+  used=`grep --only-matching --perl-regex "(?<=used\=).*" used`
+  username=`grep --only-matching --perl-regex "(?<=username\=).*" used`
+  masterip=`grep --only-matching --perl-regex "(?<=masterip\=).*" used`
+else
+ echo "privertkey not found .key will genarate in next steps"
+fi
+
+echo "$used"
+#if this server previously used
+#will automaticly sync
+if [[ $used == "1" ]]
+then
+ echo "what are the files you want to exclude"
+ echo "ex: file1,file2,file3"
+ read filelist
+echo "$username"
+echo "$masterip"
+command=" sudo rsync -avzhe ssh --exclude={$filelist} $username@$masterip:/var/www/html/ /var/www/html/"
+eval $command
+#using as first time so privert key will create for passwordless loging and syicing process will start
+else
+ echo "creating privertkey for passwordless logging"
+ echo "username :"
+ read username
+ echo "masterip :"
+ read masterip
+ echo "press enter without giving any inputs to next 3 steps"
+ sudo ssh-keygen -t rsa -b 2048
+ sudo ssh-copy-id -i /root/.ssh/id_rsa.pub $username@$masterip
+ echo -e "used=1\nusername=$username\nmasterip=$masterip">>$file
+ sudo chmod 777  used serverrysinc.sh
+ ./serverrysinc.sh
+fi
